@@ -1,0 +1,70 @@
+# =============================================================
+#  PODIUM — Naver Scraper Automation
+#  매일 KST 03:00 (UTC 18:00) 자동 실행 + 수동 실행 지원
+# =============================================================
+
+# =============================================================
+#  PODIUM — Naver Scraper Automation (Root Directory Version)
+# =============================================================
+
+name: PODIUM Scraper
+
+on:
+  # 매일 KST 03:00 (UTC 18:00) 실행
+  schedule:
+    - cron: '0 18 * * *'
+
+  # GitHub Actions 탭에서 수동 실행 지원
+  workflow_dispatch:
+    inputs:
+      keywords:
+        description: '검색 키워드 (쉼표 구분)'
+        required: false
+        default: ''
+
+concurrency:
+  group: podium-scraper
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    name: Run Naver Shopping Scraper
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          # 루트에 있는 lock 파일을 참조하도록 수정
+          cache-dependency-path: 'package-lock.json' 
+
+      - name: Install dependencies
+        # 루트 폴더에서 바로 설치
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Run scraper
+        env:
+          SUPABASE_URL:             ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NAVER_CLIENT_ID:          ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET:      ${{ secrets.NAVER_CLIENT_SECRET }}
+          NAVER_DISPLAY:            '20'
+          NODE_ENV:                 'production'
+        run: |
+          KEYWORDS="${{ github.event.inputs.keywords }}"
+          if [ -n "$KEYWORDS" ]; then
+            npx tsx src/index.ts --keywords "$KEYWORDS"
+          else
+            npx tsx src/index.ts
+          fi

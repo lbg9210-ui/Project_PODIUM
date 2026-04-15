@@ -1,0 +1,1 @@
+export abstract class BaseScraper { abstract fetch(keyword: string): Promise<any[]>; }

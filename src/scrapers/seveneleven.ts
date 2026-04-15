@@ -1,0 +1,1 @@
+import { BaseScraper } from './base-scraper'; export class SevenScraper extends BaseScraper { async fetch(k: string) { return []; } }

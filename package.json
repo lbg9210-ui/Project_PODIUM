@@ -1,0 +1,23 @@
+{
+  "name": "podium-scraper",
+  "version": "1.0.0",
+  "description": "PODIUM — 네이버 쇼핑 API 스크래퍼",
+  "type": "module",
+  "scripts": {
+    "scrape":      "tsx src/index.ts",
+    "dev":         "tsx src/index.ts",
+    "test:unit":   "tsx src/utils/unit-converter.ts",
+    "build":       "tsc",
+    "start:built": "node dist/index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5"
+  }
+}

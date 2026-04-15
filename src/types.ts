@@ -1,0 +1,2 @@
+export interface Product { id?: string; name: string; unit_size: number; unit_type: string; platform_id: string; }
+export interface PriceHistory { product_id: string; platform_id: string; price_won: number; unit_price?: number; scraped_at: string; }
